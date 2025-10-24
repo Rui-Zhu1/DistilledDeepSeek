@@ -216,10 +216,10 @@ def create_niche_dataset():
         "completion": "Answer 50: Thoroughly test the camera’s functionality, document the restoration process, and store the camera properly to safeguard its restored state."
     }
 ]
-    with open("niche_dataset.jsonl", "w", encoding="utf-8") as f:
+    with open("niche_dataset.jsonl", "wb") as f:
         for sample in samples:
             json_line = json.dumps(sample, ensure_ascii=False)
-            f.write(json_line + "\n")
+            f.write((json_line + "\n").encode('utf-8'))
     print("niche_dataset.jsonl has been created.")
 
 def main():
@@ -256,7 +256,7 @@ def main():
 
     # --- 5. Tokenize the Dataset ---
     def tokenize_function(examples):
-        combined_texts = [f"{prompt}\\n{completion}" for prompt, completion in zip(examples["prompt"], examples["completion"])]
+        combined_texts = [f"{prompt}\n{completion}" for prompt, completion in zip(examples["prompt"], examples["completion"])]
         tokenized = tokenizer(combined_texts, truncation=True, max_length=512, padding="max_length")
         tokenized["labels"] = tokenized["input_ids"].copy()
         return tokenized
