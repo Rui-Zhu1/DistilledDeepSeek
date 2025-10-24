@@ -283,7 +283,7 @@ def main():
         fp16=True,
         logging_steps=10,
         save_steps=100,
-        evaluation_strategy="steps",
+        eval_strategy="steps",
         eval_steps=10,
         learning_rate=3e-5,
         logging_dir="./logs",
@@ -300,11 +300,23 @@ def main():
     )
     trainer.train()
 
-    # --- 9. Save the Final Model ---
+    # --- 9. Save, Merge, and Save Full Model ---
+    adapter_save_path = "deepseek_finetuned_adapter"
+    model.save_pretrained(adapter_save_path)
+    tokenizer.save_pretrained(adapter_save_path)
+    print(f"Adapter saved to {adapter_save_path}")
+
+    # Merge the adapter with the base model
+    base_model = AutoModelForCausalLM.from_pretrained(model_name)
+    peft_model = PeftModel.from_pretrained(base_model, adapter_save_path)
+    merged_model = peft_model.merge_and_unload()
+
+    # Save the full merged model
     final_save_path = "deepseek_finetuned_full"
-    model.save_pretrained(final_save_path)
+    merged_model.save_pretrained(final_save_path)
     tokenizer.save_pretrained(final_save_path)
-    print(f"Model saved to {final_save_path}")
+    print(f"Full model saved to {final_save_path}")
+
 
     # --- 10. Inference with the Fine-Tuned Model ---
     # Load the fine-tuned model for inference
