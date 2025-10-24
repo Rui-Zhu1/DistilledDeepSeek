@@ -219,7 +219,7 @@ def create_niche_dataset():
     with open("niche_dataset.jsonl", "w", encoding="utf-8") as f:
         for sample in samples:
             json_line = json.dumps(sample, ensure_ascii=False)
-            f.write(json_line + "\\n")
+            f.write(json_line + "\n")
     print("niche_dataset.jsonl has been created.")
 
 def main():
