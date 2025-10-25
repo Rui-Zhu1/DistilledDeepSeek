@@ -1,9 +1,0 @@
-datasets
-sympy
-wandb
-bitsandbytes
-torch
-transformers
-peft
-accelerate
-sentencepiece
